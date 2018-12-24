@@ -1,0 +1,30 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+<style>
+img {
+  height: auto;
+  width: 1600px;
+  display: none
+}
+.inner:hover img {
+  display: block;
+}
+</style>
+
+```{r, echo=FALSE, message=FALSE}
+library(tidyverse)
+files <- list.files("./data")
+data_frame(files) %>%
+  rowwise() %>% 
+  mutate(informant = unlist(str_split(files, "_Sasha_"))[1],
+         year = str_extract(informant, "\\d{4}"),
+         informant = str_extract(informant, "\\D*"),
+         word = unlist(str_split(files, "_Sasha_"))[2],
+         utterance = unlist(str_split(word, "_"))[2],
+         word = unlist(str_split(word, "_"))[1],
+         files = paste0('<div class="inner"> посмотреть <img src="./data/', files, '" alt=""> </div>')) %>% 
+  DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 50, dom = 'tip'), escape = FALSE)
+```
