@@ -25,9 +25,11 @@ data_frame(files) %>%
          word = unlist(str_split(files, "_\\d{4}_"))[2],
          utterance = unlist(str_split(word, "_"))[2],
          word = unlist(str_split(word, "_"))[1],
-         type = unlist(str_split(files, ":"))[2],
-         type = str_replace(type, ".png", ""),
+         type = unlist(str_extract(files, ".{2}:")),
+         type = str_replace(type, ":", ""),
+         annotate = unlist(str_split(files, ": "))[2],
+         annotate = str_replace(annotate, ".png", ""),
          files = paste0('<div class="inner"> посмотреть <img src="./data/', files, '" alt=""> </div>')) %>% 
-  select(informant, year, word, utterance, type, files) %>% 
+  select(informant, year, word, utterance, annotate, type, files) %>% 
   DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 50, dom = 'tip'), escape = FALSE)
 ```
