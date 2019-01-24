@@ -19,12 +19,15 @@ library(tidyverse)
 files <- list.files("./data")
 data_frame(files) %>%
   rowwise() %>% 
-  mutate(informant = unlist(str_split(files, "_Sasha_"))[1],
-         year = str_extract(informant, "\\d{4}"),
+  mutate(informant = unlist(str_split(files, "_\\d{4}_"))[1],
+         year = str_extract(files, "\\d{4}"),
          informant = str_extract(informant, "\\D*"),
-         word = unlist(str_split(files, "_Sasha_"))[2],
+         word = unlist(str_split(files, "_\\d{4}_"))[2],
          utterance = unlist(str_split(word, "_"))[2],
          word = unlist(str_split(word, "_"))[1],
+         type = unlist(str_split(files, ":"))[2],
+         type = str_replace(type, ".png", ""),
          files = paste0('<div class="inner"> посмотреть <img src="./data/', files, '" alt=""> </div>')) %>% 
+  select(informant, year, word, utterance, type, files) %>% 
   DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 50, dom = 'tip'), escape = FALSE)
 ```
