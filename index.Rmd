@@ -6,20 +6,71 @@ editor_options:
 <style>
 img {
   height: auto;
-  width: 1600px;
+  width: 2500px;
   display: none
 }
 .inner:hover img {
   display: block;
 }
+
+ /* The grid: Four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+  padding: 10px;
+}
+
+/* Style the images inside the grid */
+.column img {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.column img:hover {
+  opacity: 1;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The expanding image container (positioning is needed to position the close button and the text) */
+.container {
+  position: relative;
+  display: none;
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+/* Closable button inside the image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+} 
 </style>
 
 ```{r, echo=FALSE, message=FALSE}
+# setwd("/home/agricolamz/work/databases/andi_l_database")
 library(tidyverse)
 files <- list.files("./data")
 data_frame(files) %>%
   rowwise() %>% 
-  mutate(informant = unlist(str_split(files, "_\\d{4}_"))[1],
+  mutate(files = str_replace(files, "unknown", "unknown_0000"),
+         informant = unlist(str_split(str_replace(files, "15_08_24_", ""), "_\\d{4}_"))[1],
          year = str_extract(files, "\\d{4}"),
          informant = str_extract(informant, "\\D*"),
          word = unlist(str_split(files, "_\\d{4}_"))[2],
@@ -29,7 +80,24 @@ data_frame(files) %>%
          type = str_replace(type, ":", ""),
          annotate = unlist(str_split(files, ": "))[2],
          annotate = str_replace(annotate, ".png", ""),
-         files = paste0('<div class="inner"> посмотреть <img src="./data/', files, '" alt=""> </div>')) %>% 
+         files = paste0('<div class="inner"> ⏿ <img src="./data/', files, '" alt="', files,
+                        '", onclick="myFunction(this);"> </div>')) %>% 
   select(informant, year, word, utterance, annotate, type, files) %>% 
-  DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 50, dom = 'tip'), escape = FALSE)
+  DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 5, dom = 'tip'), escape = FALSE)
 ```
+
+<div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg" style="width:100%">
+  <div id="imgtext"></div>
+</div>
+
+<script>
+function myFunction(imgs) {
+  var expandImg = document.getElementById("expandedImg");
+  var imgText = document.getElementById("imgtext");
+  expandImg.src = imgs.src;
+  imgText.innerHTML = imgs.alt;
+  expandImg.parentElement.style.display = "block";
+}
+</script>
