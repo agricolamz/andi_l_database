@@ -1,11 +1,11 @@
 <style>
-img.sticky {
-  float: left;
-  top: 0;
+.main-container {
+  margin-left: 0;
+  margin-right: 0;
 }
 </style>
 
-<img id="expandedImg" class="sticky" style="width:50%">
+<img id="expandedImg" style="position: fixed; top: 0; left: 900px; width:50%">
 
 ```{r, echo=FALSE, message=FALSE}
 # setwd("/home/agricolamz/work/databases/andi_l_database")
@@ -26,7 +26,7 @@ data_frame(files) %>%
          annotate = str_replace(annotate, ".png", ""),
          files = paste0('<img src="data/', files, '" style="width:10%" onclick="myFunction(this);">')) %>% 
   select(informant, year, word, utterance, annotate, type, files) %>% 
-  DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 5, dom = 'tip'), escape = FALSE)
+  DT::datatable(filter = 'top', rownames = FALSE, options = list(pageLength = 50, dom = 'tip'), escape = FALSE)
 ```
 
 <script>
@@ -40,7 +40,7 @@ function myFunction(imgs) {
 
    $(document).ready(function() {
      $head = $('#header');
-     $head.prepend('<img src=\"logo.jpg\" style=\"float: right;width: 150px;\"/>')
+     $head.prepend('<img src=\"logo.jpg\" style=\"float: le;width: 150px;\"/>')
    });
 </script>
 
