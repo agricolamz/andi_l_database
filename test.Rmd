@@ -18,6 +18,7 @@ data_frame(files) %>%
          year = str_extract(files, "\\d{4}"),
          informant = str_extract(informant, "\\D*"),
          word = unlist(str_split(files, "_\\d{4}_"))[2],
+         word = str_replace(word, "^_", ""),
          utterance = unlist(str_split(word, "_"))[2],
          word = unlist(str_split(word, "_"))[1],
          type = unlist(str_extract(files, ".{2}:")),
